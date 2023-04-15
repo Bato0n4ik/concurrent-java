@@ -16,33 +16,23 @@ public class Main {
         CountDownLatch airLatch = new CountDownLatch(500);
         CountDownLatch fireLatch = new CountDownLatch(500);
 
+
         Magicians blueMag = new Magicians(airLatch, fireLatch, "BLUE");
         Magicians redMag = new Magicians(fireLatch, airLatch, "RED");
 
         pool.submit(blueMag);
         pool.submit(redMag);
 
-        Rocket blueRocket;
-        Rocket redRocket;
-
         AtomicInteger upperBound = new AtomicInteger(1000);
 
         while(upperBound.get() != 0){
             var crystals = new Crystals();
-            blueRocket = new Rocket(airLatch, crystals, TypeOfCrystals.BLUE,  barrier);
-            redRocket = new Rocket(fireLatch, crystals, TypeOfCrystals.RED,  barrier);
-            if(!blueMag.isInterrupted()){
-                pool.submit(blueRocket);
-                upperBound.decrementAndGet();
-            }
-            if(!redMag.isInterrupted()){
-                pool.submit(redRocket);
-                upperBound.decrementAndGet();
-            }
-            if(redMag.isInterrupted() || blueMag.isInterrupted()){
-                System.out.println("break called in loop!");
-                break;
-            }
+
+            pool.submit(new Rocket(airLatch, crystals, TypeOfCrystals.BLUE,  barrier));
+            pool.submit(new Rocket(fireLatch, crystals, TypeOfCrystals.RED,  barrier));
+
+
+            upperBound.decrementAndGet();
 
         }
 

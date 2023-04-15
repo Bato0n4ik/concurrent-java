@@ -42,9 +42,10 @@ public class Rocket extends Thread {
             barrier.await();
 
             flagIn.set(false);
-
-            System.out.println("Rocket-" + rocketCounter + " take " + type +
-                    " crystal" + " crystals, now left " + latch.getCount() + "");
+            if(latch.getCount() != 0){
+                System.out.println("Rocket-" + rocketCounter + " take " + type +
+                        " crystal, " + " crystals, now left " + latch.getCount());
+            }
 
             barrier.reset();
 
@@ -53,9 +54,5 @@ public class Rocket extends Thread {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public long getCountLatch(){
-        return this.latch.getCount();
     }
 }
